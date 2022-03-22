@@ -43,6 +43,55 @@ private:
     GLuint vertex_buffer_{};
 };
 
+glm::mat4 ViewMatrix;
+
+glm::mat4 getViewMatrix(){
+    return ViewMatrix;
+}
+
+
+
+// Let camera moves like in showcases. y = 0
+
+
+// Initial position : on +Z
+glm::vec3 position = glm::vec3( 0, 0, 5 );
+// Initial horizontal angle : toward -Z
+float h_angle = 0;
+// Initial Field of View
+float initialFoV = 45.0f;
+
+float speed = 3.0f; // 3 units / second
+float mouseSpeed = 0.005f;
+
+
+void computeMatricesFromInputs(){
+
+    // glfwGetTime is called only once, the first time this function is called
+    static double lastTime = glfwGetTime();
+
+    // Compute time difference between current and last frame
+    double currentTime = glfwGetTime();
+    float deltaTime = float(currentTime - lastTime);
+
+
+    h_angle += deltaTime * speed;
+
+    position = glm::vec3(2 * cos(h_angle), 1, 2 * sin(h_angle));
+
+
+    // Camera matrix
+    ViewMatrix = glm::lookAt(
+            position,           // Camera is here
+            glm::vec3(0, 0, 0), // and looks here : here are triangles
+            glm::vec3(0, 1, 0)
+    );
+
+    // For the next frame, the "last time" will be "now"
+    lastTime = currentTime;
+}
+
+
 
 int main(void) {
 
@@ -109,17 +158,14 @@ int main(void) {
     GLuint Matrix_red = glGetUniformLocation(program_red, "MVP");
     GLuint Matrix_blue = glGetUniformLocation(program_blue, "MVP");
 
-    glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-
-    glm::mat4 View = glm::lookAt(
-            glm::vec3(0,0,2),
-            glm::vec3(0,0,0),
-            glm::vec3(0,1,0)
-    );
+//    glm::mat4 View = glm::lookAt(
+//            glm::vec3(0,0,2),
+//            glm::vec3(0,0,0),
+//            glm::vec3(0,1,0)
+//    );
 
     glm::mat4 Model = glm::mat4(1.0f);
-
-    glm::mat4 MVP = Projection * View * Model;
+    glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
@@ -129,8 +175,12 @@ int main(void) {
         // Clear the screen
         glClear( GL_COLOR_BUFFER_BIT );
 
-        // Use our shader
 
+        computeMatricesFromInputs();
+        glm::mat4 View = getViewMatrix();
+        glm::mat4 MVP = Projection * View * Model;
+
+        // Use our shader
         glUseProgram(program_blue);
         glUniformMatrix4fv(Matrix_blue, 1, GL_FALSE, &MVP[0][0]);
         triangle_blue.Draw(1);
