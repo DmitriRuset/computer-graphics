@@ -91,7 +91,7 @@ public:
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
         glVertexAttribPointer(
-                1,             // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                1,             
                 3,                  // size
                 GL_FLOAT,           // type
                 GL_FALSE,           // normalized?
@@ -230,7 +230,7 @@ int main(void) {
     ColoredFigure figure{g_vertex_buffer_data, sizeof(g_vertex_buffer_data),
                                g_color_buffer_data, sizeof(g_color_buffer_data), 6};
 
-    GLuint Matrix_red = glGetUniformLocation(program_fig, "MVP");
+    GLuint Matrix_fig = glGetUniformLocation(program_fig, "MVP");
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -248,7 +248,7 @@ int main(void) {
         glm::mat4 MVP = Projection * View * Model;
 
         glUseProgram(program_fig);
-        glUniformMatrix4fv(Matrix_red, 1, GL_FALSE, &MVP[0][0]);
+        glUniformMatrix4fv(Matrix_fig, 1, GL_FALSE, &MVP[0][0]);
         figure.Draw();
 
         // Swap buffers
