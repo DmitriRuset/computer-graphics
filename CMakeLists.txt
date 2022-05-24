@@ -59,12 +59,13 @@ add_definitions(
 # Second Task
 add_executable(shooter
 		shooter/shooter.cpp
+		shooter/plumbob.hpp
 		common/shader.hpp
 		common/shader.cpp
 
 		shooter/Figure.fragmentshader
 		shooter/Figure.vertexshader
-		)
+		shooter/window.hpp shooter/colored_figure.hpp)
 target_link_libraries(shooter
 		${ALL_LIBS}
 		)
