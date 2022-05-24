@@ -50,6 +50,7 @@ public:
 
     ~ColoredFigure() {
         glDeleteBuffers(1, &vertex_buffer_);
+        glDeleteBuffers(1, &color_buffer_);
     }
 private:
     uint32_t triangles_cnt_{};
