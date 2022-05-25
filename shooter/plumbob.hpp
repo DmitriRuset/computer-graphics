@@ -2,20 +2,24 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <shooter/figure.hpp>
 
-
-struct PlumBob {
+struct PlumBob: IFigure {
 public:
-    GLfloat* GetVertices() {
+    const GLfloat* GetVertices() const final {
         return vertices;
     }
 
-    GLfloat* GetColors() {
+    const GLfloat* GetColors() const final {
         return colors;
     }
 
-    size_t SizeOf() const {
+    size_t SizeOf() const final {
         return 36 * 3 * sizeof(GLfloat);
+    }
+
+    size_t CntTriangles() const final {
+        return 12;
     }
 private:
     GLfloat vertices[36 * 3] = {

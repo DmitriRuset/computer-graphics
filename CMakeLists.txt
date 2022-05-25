@@ -63,9 +63,9 @@ add_executable(shooter
 		common/shader.hpp
 		common/shader.cpp
 
-		shooter/Figure.fragmentshader
-		shooter/Figure.vertexshader
-		shooter/window.hpp shooter/colored_figure.hpp)
+		shooter/Enemy.fragmentshader
+		shooter/Enemy.vertexshader
+		shooter/window.hpp shooter/colored_figures.hpp shooter/enemy.hpp shooter/figure.hpp)
 target_link_libraries(shooter
 		${ALL_LIBS}
 		)

@@ -151,6 +151,10 @@ public:
         // For the next frame, the "last time" will be "now"
         lastTime = currentTime;
     }
+
+    glm::vec3 getCameraPosition() {
+        return position;
+    }
 private:
     // Initial position : on +Z
     glm::vec3 position = glm::vec3( 0, 0, 0 );
