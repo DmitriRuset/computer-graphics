@@ -55,6 +55,7 @@ public:
         }
 
         glfwSetInputMode(window_, GLFW_STICKY_KEYS, GL_TRUE);
+        glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         return 0;
     }
@@ -66,6 +67,10 @@ public:
     bool ExitTime() {
         return glfwGetKey(window_, GLFW_KEY_ESCAPE ) == GLFW_PRESS ||
                glfwWindowShouldClose(window_) != 0;
+    }
+
+    GLFWwindow* GetWindow() {
+        return window_;
     }
 
     ~Window() {
@@ -104,11 +109,11 @@ public:
         verticalAngle += mouseSpeed * float(height / 2. - ypos);
 
         // Direction : Spherical coordinates to Cartesian coordinates conversion
-        glm::vec3 direction(
-                cos(verticalAngle) * sin(horizontalAngle),
-                sin(verticalAngle),
-                cos(verticalAngle) * cos(horizontalAngle)
-        );
+        direction = {
+            cos(verticalAngle) * sin(horizontalAngle),
+            sin(verticalAngle),
+            cos(verticalAngle) * cos(horizontalAngle)
+        };
 
         // Right vector
         glm::vec3 right = glm::vec3(
@@ -155,9 +160,14 @@ public:
     glm::vec3 getCameraPosition() {
         return position;
     }
+
+    glm::vec3 getCameraDirection() {
+        return direction;
+    }
 private:
     // Initial position : on +Z
     glm::vec3 position = glm::vec3( 0, 0, 0 );
+    glm::vec3 direction = glm::vec3(0);
     // Initial horizontal angle : toward -Z
     float horizontalAngle = 3.14f;
     // Initial vertical angle : none

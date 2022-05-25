@@ -11,14 +11,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <vector>
 
 #include <common/shader.hpp>
 #include <common/controls.hpp>
+#include <common/objloader.hpp>
 
 #include <shooter/plumbob.hpp>
 #include <shooter/window.hpp>
 #include <shooter/colored_figures.hpp>
 #include <shooter/enemy.hpp>
+#include <shooter/fireball.hpp>
+#include <shooter/projectiles.hpp>
 
 
 static KeyboardAndMouse* controller = nullptr;
@@ -49,6 +53,10 @@ Enemy CreateEnemyRandom() {
     return {pos, rot_dim, angle};
 }
 
+Fireball CreateFireball() {
+    return {controller->getCameraPosition(), controller->getCameraDirection() * 0.03f};
+}
+
 int main() {
 
     if( !glfwInit() )
@@ -71,12 +79,13 @@ int main() {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-
     glm::vec3 pos = {0, 0, 0};
 
     PlumBob pb; // Model
 
     ColoredFigures figures{pb, "Enemy.vertexshader", "Enemy.fragmentshader"}; // For drawing model
+
+    Projectiles projectiles{"Fireball.vertexshader", "Fireball.fragmentshader"};
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -84,18 +93,57 @@ int main() {
     glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
     const int MaxEnemies = 20;
+    const int MaxDistance = 100;
 
     int cnt_enemies = 0;
     int ticks = 0;
 
+    double last_shot_time = 0;
+
     do{
+        double current = glfwGetTime();
         // Clear the screen
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         interaction.computeMatricesFromInputs(window);
 
+        if (glfwGetKey(window.GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS &&
+            current - last_shot_time > 0.3f) { // cooldown
+            std::cout << "Create Fireball" << std::endl;
+            last_shot_time = glfwGetTime();
+            Fireball fireball = CreateFireball();
+            projectiles.AddFireball(fireball);
+        }
+
+        projectiles.Move();
+
         figures.Draw(Projection);
+        projectiles.Draw(Projection);
+
+        std::set<std::shared_ptr<Fireball>> hitlist_fireballs;
+        std::set<std::shared_ptr<Enemy>> hitlist_enemies;
+
+        for (auto& fireball: projectiles.GetItems()) {
+            for (auto& enemy: figures.GetItems()) {
+                if (glm::distance(fireball->GetPos(), enemy->GetPos()) < fireball->collision_rad + enemy->collision_rad) {
+                    hitlist_fireballs.insert(fireball);
+                    hitlist_enemies.insert(enemy);
+                }
+            }
+
+            if (glm::distance(fireball->GetPos(), controller->getCameraPosition()) > MaxDistance) {
+                hitlist_fireballs.insert(fireball);
+            }
+        }
+
+        for (auto& target: hitlist_fireballs) {
+            projectiles.DestroyFireball(target);
+        }
+
+        for (auto& target: hitlist_enemies) {
+            figures.DestroyEnemy(target);
+        }
+
 
         ++ticks;
 

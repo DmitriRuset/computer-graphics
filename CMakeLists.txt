@@ -56,16 +56,21 @@ add_definitions(
 	-D_CRT_SECURE_NO_WARNINGS
 )
 
+
 # Second Task
 add_executable(shooter
 		shooter/shooter.cpp
 		shooter/plumbob.hpp
+		common/objloader.cpp
+		common/objloader.hpp
+		common/texture.hpp
+		common/texture.cpp
 		common/shader.hpp
 		common/shader.cpp
 
 		shooter/Enemy.fragmentshader
 		shooter/Enemy.vertexshader
-		shooter/window.hpp shooter/colored_figures.hpp shooter/enemy.hpp shooter/figure.hpp)
+		shooter/window.hpp shooter/colored_figures.hpp shooter/enemy.hpp shooter/figure.hpp shooter/fireball.hpp shooter/projectiles.hpp)
 target_link_libraries(shooter
 		${ALL_LIBS}
 		)

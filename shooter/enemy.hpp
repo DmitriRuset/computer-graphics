@@ -9,8 +9,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <algorithm>
 
-const double Pi = 3.14159265;
-
 
 class Enemy {
 public:
@@ -30,7 +28,11 @@ public:
         return rot_;
     }
 
+    const float collision_rad = 0.5f;
+
 private:
+    const double Pi = 3.14159265;
+
     glm::vec3 pos_;
     glm::quat rot_;
 };

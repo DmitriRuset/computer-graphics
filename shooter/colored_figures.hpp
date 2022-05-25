@@ -51,13 +51,14 @@ public:
                 nullptr            // array buffer offset
         );
 
+        glUseProgram(program_fig_);
+
         for (auto& coord: coords_) {
             glm::mat4 model_matrix = glm::mat4(glm::translate(glm::mat4(1.0), coord->GetPos()) *
                                                glm::toMat4(coord->GetRot()));
             glm::mat4 view_matrix = getViewMatrix();
             glm::mat4 MVP = projection_matrix * view_matrix * model_matrix;
 
-            glUseProgram(program_fig_);
             glUniformMatrix4fv(matrix_fig_, 1, GL_FALSE, &MVP[0][0]);
 
             // Draw the triangles!
@@ -70,6 +71,14 @@ public:
 
     void AddEnemy(Enemy& enemy) {
         coords_.insert(std::make_shared<Enemy>(enemy));
+    }
+
+    void DestroyEnemy(const std::shared_ptr<Enemy>& enemy) {
+        coords_.erase(enemy);
+    }
+
+    const auto& GetItems() const {
+        return coords_;
     }
 
     ~ColoredFigures() {
