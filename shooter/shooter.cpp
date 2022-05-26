@@ -16,6 +16,7 @@
 #include <common/shader.hpp>
 #include <common/controls.hpp>
 #include <common/objloader.hpp>
+#include <common/text2D.hpp>
 
 #include <shooter/plumbob.hpp>
 #include <shooter/window.hpp>
@@ -73,11 +74,13 @@ int main() {
 
     window.CreateWindow(1680, 1050, "Second task");
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.1f, 0.0f);
 
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+
+    initText2D( "font.DDS" );
 
     glm::vec3 pos = {0, 0, 0};
 
@@ -97,8 +100,10 @@ int main() {
 
     int cnt_enemies = 0;
     int ticks = 0;
+    int shot_enemies = 0;
 
     double last_shot_time = 0;
+    char text[16] = {};
 
     do{
         double current = glfwGetTime();
@@ -142,6 +147,8 @@ int main() {
 
         for (auto& target: hitlist_enemies) {
             figures.DestroyEnemy(target);
+            ++shot_enemies;
+            --cnt_enemies;
         }
 
 
@@ -160,6 +167,10 @@ int main() {
             std::cout << "New enemy on coords: " << coords.x << " " << coords.y << " " << coords.z << std::endl;
         }
 
+        sprintf(text,"score: %d", shot_enemies);
+        std::cout << text << std::endl;
+        printText2D(text, 10, 10, 20);
+
         // Swap buffers
         window.SwapBuffers();
         glfwPollEvents();
@@ -169,6 +180,8 @@ int main() {
 
     // Cleanup VBO
     glDeleteVertexArrays(1, &VertexArrayID);
+
+    cleanupText2D();
 
     return 0;
 }

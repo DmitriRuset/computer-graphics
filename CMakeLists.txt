@@ -67,7 +67,11 @@ add_executable(shooter
 		common/texture.cpp
 		common/shader.hpp
 		common/shader.cpp
+		common/text2D.hpp
+		common/text2D.cpp
 
+		shooter/Text.fragmentshader
+		shooter/Text.vertexshader
 		shooter/Enemy.fragmentshader
 		shooter/Enemy.vertexshader
 		shooter/window.hpp shooter/colored_figures.hpp shooter/enemy.hpp shooter/figure.hpp shooter/fireball.hpp shooter/projectiles.hpp)
