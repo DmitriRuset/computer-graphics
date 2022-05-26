@@ -101,6 +101,10 @@ public:
         coords_.erase(fireball);
     }
 
+    void Clear() {
+        coords_.clear();
+    }
+
     const auto& GetItems() const {
         return coords_;
     }

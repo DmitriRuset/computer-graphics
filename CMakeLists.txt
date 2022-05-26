@@ -74,7 +74,7 @@ add_executable(shooter
 		shooter/Text.vertexshader
 		shooter/Enemy.fragmentshader
 		shooter/Enemy.vertexshader
-		shooter/window.hpp shooter/colored_figures.hpp shooter/enemy.hpp shooter/figure.hpp shooter/fireball.hpp shooter/projectiles.hpp)
+		shooter/window.hpp shooter/colored_figures.hpp shooter/enemy.hpp shooter/figure.hpp shooter/fireball.hpp shooter/projectiles.hpp shooter/save_load.hpp)
 target_link_libraries(shooter
 		${ALL_LIBS}
 		)

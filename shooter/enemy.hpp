@@ -20,6 +20,8 @@ public:
         rot_.w = cos(to_rads / 2);
     }
 
+    Enemy(glm::vec3 pos, glm::quat rot): pos_(pos), rot_(rot) {}
+
     glm::vec3 GetPos() {
         return pos_;
     }

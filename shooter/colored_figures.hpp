@@ -77,6 +77,10 @@ public:
         coords_.erase(enemy);
     }
 
+    void Clear() {
+        coords_.clear();
+    }
+
     const auto& GetItems() const {
         return coords_;
     }

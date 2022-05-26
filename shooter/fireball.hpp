@@ -18,6 +18,10 @@ public:
         return pos_;
     }
 
+    glm::vec3 GetSpeed() {
+        return speed_vec_;
+    }
+
     void Move() {
         pos_ += speed_vec_;
     }

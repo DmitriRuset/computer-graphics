@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <array>
+#include <fstream>
 
 #include <GL/glew.h>
 
@@ -24,6 +25,7 @@
 #include <shooter/enemy.hpp>
 #include <shooter/fireball.hpp>
 #include <shooter/projectiles.hpp>
+#include <shooter/save_load.hpp>
 
 
 static KeyboardAndMouse* controller = nullptr;
@@ -105,6 +107,11 @@ int main() {
     double last_shot_time = 0;
     char text[16] = {};
 
+    SaveLoad save_load;
+
+    double last_saving_time = glfwGetTime();
+    double last_loading_time = glfwGetTime();
+
     do{
         double current = glfwGetTime();
         // Clear the screen
@@ -118,6 +125,18 @@ int main() {
             last_shot_time = glfwGetTime();
             Fireball fireball = CreateFireball();
             projectiles.AddFireball(fireball);
+        }
+
+        if (glfwGetKey(window.GetWindow(), GLFW_KEY_5) == GLFW_PRESS &&
+            current - last_saving_time > 1.5f) { // Saving model
+            last_saving_time = glfwGetTime();
+            save_load.SaveScene(projectiles, figures, shot_enemies);
+        }
+
+        if (glfwGetKey(window.GetWindow(), GLFW_KEY_6) == GLFW_PRESS &&
+            current - last_loading_time > 1.5f) { // Loading model
+            last_loading_time = glfwGetTime();
+            save_load.LoadScene(projectiles, figures, shot_enemies);
         }
 
         projectiles.Move();
@@ -168,7 +187,6 @@ int main() {
         }
 
         sprintf(text,"score: %d", shot_enemies);
-        std::cout << text << std::endl;
         printText2D(text, 10, 10, 20);
 
         // Swap buffers
